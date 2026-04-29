@@ -1,87 +1,87 @@
 erDiagram
-    Edificios {
+    building {
         int id PK
-        varchar nombre
+        varchar name
     }
 
-    Salones {
+    classroom {
         int id PK
-        varchar nombre
-        int id_edificio FK
+        varchar name
+        int building_id FK
     }
 
-    Horarios {
+    schedule {
         int id PK
-        varchar dia
-        varchar hora_inicio
-        varchar hora_fin
+        varchar day
+        varchar start_time
+        varchar end_time
     }
 
-    Facultades {
+    faculty {
         int id PK
-        varchar nombre
+        varchar name
     }
 
-    Cursos {
+    course {
         int id PK
-        varchar nombre
-        int id_facultad FK
+        varchar name
+        int faculty_id FK
     }
 
-    Carreras {
+    program {
         int id PK
-        varchar nombre
-        int id_facultad FK
+        varchar name
+        int faculty_id FK
     }
 
-    Roles {
+    role {
         int id PK
-        varchar nombre
+        varchar name
     }
 
-    Usuarios {
+    user {
         int id PK
-        varchar nombre
-        varchar apellido
-        int id_rol FK
+        varchar name
+        varchar last_name
+        int role_id FK
     }
 
-    Calendario_Cursos {
+    course_schedule {
         int id PK
-        int id_curso FK
-        int id_horario FK
-        int id_salon FK
-        int id_profesor FK
-        int cupo
+        int course_id FK
+        int schedule_id FK
+        int classroom_id FK
+        int professor_id FK
+        int capacity
     }
 
-    Cursos_Carreras {
-        int id_curso FK
-        int id_carrera FK
-        int semestre_pensum
+    program_course {
+        int course_id FK
+        int program_id FK
+        int curriculum_semester
     }
 
-    Carreras_Estudiantes {
-        int id_carrera FK
-        int id_usuario FK
-        int semestre_actual
+    student_program {
+        int program_id FK
+        int user_id FK
+        int current_semester
     }
 
-    Cursos_Estudiantes {
-        int id_calendario FK
-        int id_usuario FK
+    student_course {
+        int course_schedule_id FK
+        int user_id FK
     }
 
-    Edificios ||--o{ Salones : contiene
-    Salones ||--o{ Calendario_Cursos : asigna
-    Horarios ||--o{ Calendario_Cursos : define
-    Facultades ||--o{ Cursos : oferta
-    Facultades ||--o{ Carreras : tiene
-    Cursos ||--o{ Calendario_Cursos : programa
-    Cursos ||--o{ Cursos_Carreras : pertenece
-    Carreras ||--o{ Cursos_Carreras : incluye
-    Roles ||--o{ Usuarios : clasifica
-    Usuarios ||--o{ Carreras_Estudiantes : matriculado
-    Carreras ||--o{ Carreras_Estudiantes : tiene
-    Usuarios ||--o{ Cursos_Estudiantes : toma
-    Calendario_Cursos ||--o{ Cursos_Estudiantes : registra
+    building ||--o{ classroom : contains
+    classroom ||--o{ course_schedule : assigns
+    schedule ||--o{ course_schedule : defines
+    faculty ||--o{ course : offers
+    faculty ||--o{ program : has
+    course ||--o{ course_schedule : programs
+    course ||--o{ program_course : belongs_to
+    program ||--o{ program_course : includes
+    role ||--o{ user : classifies
+    user ||--o{ student_program : enrolled_in
+    program ||--o{ student_program : has
+    user ||--o{ student_course : takes
+    course_schedule ||--o{ student_course : registers
