@@ -1,0 +1,131 @@
+// ============================================
+// SISTEMA UNIVERSITARIO
+// Database: PostgreSQL
+// Normalization: 4NF
+// ============================================
+
+// ============================================
+// MÓDULO DE INFRAESTRUCTURA
+// ============================================
+
+Table Edificios {
+  id serial [primary key]
+  nombre varchar(100) [not null]
+}
+
+Table Salones {
+  id serial [primary key]
+  nombre varchar(100) [not null]
+  id_edificio int [not null]
+}
+
+// ============================================
+// MÓDULO ACADÉMICO
+// ============================================
+
+Table Facultades {
+  id serial [primary key]
+  nombre varchar(100) [not null]
+}
+
+Table Carreras {
+  id serial [primary key]
+  nombre varchar(100) [not null]
+  id_facultad int [not null]
+}
+
+Table Cursos {
+  id serial [primary key]
+  nombre varchar(100) [not null]
+  id_facultad int [not null]
+}
+
+Table Horarios {
+  id serial [primary key]
+  dia varchar(20) [not null]
+  hora_inicio time [not null]
+  hora_fin time [not null]
+}
+
+Table Calendario_Cursos {
+  id serial [primary key]
+  id_curso int [not null]
+  id_horario int [not null]
+  id_salon int [not null]
+  id_profesor int [not null]
+  cupo int [not null]
+}
+
+Table Cursos_Carreras {
+  id_curso int [not null]
+  id_carrera int [not null]
+  semestre_pensum int [not null]
+
+  Indexes {
+    (id_curso, id_carrera) [pk]
+  }
+}
+
+// ============================================
+// MÓDULO DE USUARIOS
+// ============================================
+
+Table Roles {
+  id serial [primary key]
+  nombre varchar(50) [not null]
+}
+
+Table Usuarios {
+  id serial [primary key]
+  nombre varchar(100) [not null]
+  apellido varchar(100) [not null]
+  id_rol int [not null]
+}
+
+Table Carreras_Estudiantes {
+  id_carrera int [not null]
+  id_usuario int [not null]
+  semestre_actual int [not null]
+
+  Indexes {
+    (id_carrera, id_usuario) [pk]
+  }
+}
+
+Table Cursos_Estudiantes {
+  id_calendario int [not null]
+  id_usuario int [not null]
+
+  Indexes {
+    (id_calendario, id_usuario) [pk]
+  }
+}
+
+// ============================================
+// RELACIONES - MÓDULO INFRAESTRUCTURA
+// ============================================
+
+Ref: Salones.id_edificio > Edificios.id [delete: restrict, update: cascade]
+
+// ============================================
+// RELACIONES - MÓDULO ACADÉMICO
+// ============================================
+
+Ref: Cursos.id_facultad > Facultades.id [delete: restrict, update: cascade]
+Ref: Carreras.id_facultad > Facultades.id [delete: restrict, update: cascade]
+Ref: Calendario_Cursos.id_curso > Cursos.id [delete: restrict, update: cascade]
+Ref: Calendario_Cursos.id_horario > Horarios.id [delete: restrict, update: cascade]
+Ref: Calendario_Cursos.id_salon > Salones.id [delete: restrict, update: cascade]
+Ref: Cursos_Carreras.id_curso > Cursos.id [delete: restrict, update: cascade]
+Ref: Cursos_Carreras.id_carrera > Carreras.id [delete: restrict, update: cascade]
+
+// ============================================
+// RELACIONES - MÓDULO USUARIOS
+// ============================================
+
+Ref: Usuarios.id_rol > Roles.id [delete: restrict, update: cascade]
+Ref: Carreras_Estudiantes.id_carrera > Carreras.id [delete: restrict, update: cascade]
+Ref: Carreras_Estudiantes.id_usuario > Usuarios.id [delete: restrict, update: cascade]
+Ref: Cursos_Estudiantes.id_calendario > Calendario_Cursos.id [delete: restrict, update: cascade]
+Ref: Cursos_Estudiantes.id_usuario > Usuarios.id [delete: restrict, update: cascade]
+
